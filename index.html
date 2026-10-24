@@ -71,7 +71,7 @@ button{cursor:pointer;border:0;background:none}
 .x{color:var(--mute);padding:2px 8px;border-radius:6px}.x:hover{background:rgba(217,69,59,.15);color:var(--bad)}
 .ck{width:20px;height:20px;border-radius:50%;border:2px solid var(--mute);flex:none;display:grid;place-items:center;font-size:12px}
 .done .ck{background:var(--acc);border-color:var(--acc);color:#241c00}.done .t{text-decoration:line-through;color:var(--mute)}
-.th,.tr2{display:grid;grid-template-columns:1fr 110px 48px 30px;align-items:center;border-bottom:1px solid var(--line)}
+.th,.tr2{display:grid;grid-template-columns:1fr 110px 48px 40px;align-items:center;border-bottom:1px solid var(--line)}
 .th{color:var(--mute);font-size:13px;padding:4px 2px}
 .cell{border:0;background:none;padding:8px 4px;width:100%;outline:0;border-radius:6px}.cell:focus{background:var(--accsoft)}
 .ft{font-weight:600;border:0;padding:8px 4px}.ft b{grid-column:2/5}
@@ -141,7 +141,7 @@ body.nav .side{transform:none}
 .page{padding:14px}.page h1{font-size:22px}
 input,select,textarea{font-size:16px}
 .ti{font-size:24px}
-.th,.tr2{grid-template-columns:1fr 80px 46px 32px}
+.th,.tr2{grid-template-columns:1fr 80px 46px 44px}
 .board{grid-template-columns:repeat(2,1fr)}
 .wk h2{width:100%;font-size:20px}
 .btn{min-height:38px}
@@ -150,6 +150,8 @@ input,select,textarea{font-size:16px}
 }
 @media(max-width:700px){.fab{display:grid;place-items:center;position:fixed;inset-inline-end:18px;inset-block-end:calc(20px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;background:var(--acc);color:#241c00;font-size:30px;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:10}.tbx button{height:38px;min-width:40px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.tr .x,.tr2 .x{min-width:36px;min-height:36px;display:inline-grid;place-items:center;font-size:15px;justify-self:center}
+@media(hover:none){.tr .x,.tr2 .x{min-width:44px;min-height:44px}}
 </style>
 </head>
 <body>
@@ -333,7 +335,10 @@ function finSal(){const s=S.sal||{};$('#fsal').innerHTML=`<div class="card" styl
 function finView(){$('#main').innerHTML=`<section class="page"><div class="row" style="justify-content:space-between"><h1>المالية</h1><label>العملة <select class="sel2" id="cur">${['ج.م','$','€','ر.س','د.إ'].map(c=>`<option${c===S.cur?' selected':''}>${c}</option>`).join('')}</select></label></div><div class="wk"><h2>${new Date(Math.floor(S.mo/12),S.mo%12,1).toLocaleDateString('ar-EG',{month:'long',year:'numeric'})}</h2><button class="btn g" data-a="mogo" data-id="-1">الشهر السابق</button><button class="btn g" data-a="mogo" data-id="0">هذا الشهر</button><button class="btn g" data-a="mogo" data-id="1">الشهر التالي</button><button class="btn" data-a="copyMo">نسخ بنود الشهر السابق</button></div><div id="fday"></div><div id="fsal"></div><div id="ftop"></div><div id="ftab"></div></section>`;finDay();finSal();finTop();finTab()}
 
 let mobEd=false;
-function render(){side();$('#main').className='main';({home:homeView,notes:notesView,tasks:tasksView,fin:finView})[S.view]();$('#mt').textContent={home:'🏠 الرئيسية',notes:'📒 الملاحظات',tasks:'✅ المهام',fin:'📊 المالية'}[S.view]}
+let lastV=null;
+function render(){const pg=document.querySelector('.page'),keep=pg&&lastV===S.view?{y:pg.scrollTop,d:[...pg.querySelectorAll('details')].map(d=>d.open)}:null;
+side();$('#main').className='main';({home:homeView,notes:notesView,tasks:tasksView,fin:finView})[S.view]();$('#mt').textContent={home:'🏠 الرئيسية',notes:'📒 الملاحظات',tasks:'✅ المهام',fin:'📊 المالية'}[S.view];lastV=S.view;
+if(keep){const n=document.querySelector('.page');if(n){n.querySelectorAll('details').forEach((d,i)=>{if(keep.d[i]!==undefined)d.open=keep.d[i]});n.scrollTop=keep.y}}}
 
 /* ---------- actions ---------- */
 const A={
